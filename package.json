@@ -1,0 +1,39 @@
+{
+  "name": "bot-hub",
+  "version": "0.0.1.0",
+  "description": "Universal messenger-to-agent bridge — connect WeChat/Feishu/Telegram to Claude Code/Codex/Copilot",
+  "type": "module",
+  "bin": {
+    "bot-hub": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "bun run --watch src/cli.ts",
+    "start": "bun run src/cli.ts",
+    "test": "bun test",
+    "test:coverage": "bun test --coverage",
+    "lint": "biome check .",
+    "format": "biome format . --write",
+    "prepublishOnly": "bun run build"
+  },
+  "keywords": ["wechat", "claude-code", "codex", "copilot", "bot", "agent", "bridge"],
+  "author": "Jerry",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ceociocto/bot-hub"
+  },
+  "dependencies": {
+    "commander": "^11.0.0"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
