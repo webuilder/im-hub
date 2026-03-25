@@ -48,12 +48,13 @@ jobs:
         run: npm test
         continue-on-error: true
 
-      - name: Publish to npm (Trusted Publishing)
+      - name: Publish to npm
         if: steps.version.outputs.changed == 'true'
         run: npm publish --access public
-        # Trusted publishing 自动生成 provenance，无需 --provenance 标志
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Summary
         if: steps.version.outputs.changed == 'true'
         run: |
-          echo "✅ Published v${{ steps.version.outputs.version }} to npm via Trusted Publishing" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Published v${{ steps.version.outputs.version }} to npm" >> $GITHUB_STEP_SUMMARY
