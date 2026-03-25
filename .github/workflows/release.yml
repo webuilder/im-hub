@@ -1,66 +1,63 @@
-name: Release
+name: Publish to npm
 
 on:
   push:
     branches: [main]
-  workflow_dispatch:
-
-permissions:
-  contents: write
-  id-token: write
+    paths:
+      - 'package.json'
 
 jobs:
-  release:
+  publish:
     runs-on: ubuntu-latest
-    # 跳过版本 bump 提交，避免循环触发
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 2
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
 
+      - name: Check version changed
+        id: version
+        run: |
+          PREV_VERSION=$(git show HEAD~1:package.json 2>/dev/null | jq -r '.version' || echo "none")
+          CURR_VERSION=$(jq -r '.version' package.json)
+          if [ "$PREV_VERSION" != "$CURR_VERSION" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "version=$CURR_VERSION" >> $GITHUB_OUTPUT
+          fi
+
       - name: Install dependencies
+        if: steps.version.outputs.changed == 'true'
         run: bun install --frozen-lockfile
 
       - name: Build
+        if: steps.version.outputs.changed == 'true'
         run: bun run build
 
       - name: Run tests
+        if: steps.version.outputs.changed == 'true'
         run: bun test
         continue-on-error: true
 
-      - name: Configure Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Bump version
-        run: npm version patch -m "chore: bump version to %s [skip ci]"
-
-      - name: Push changes
-        run: |
-          git push
-          git push --tags
-
       - name: Setup Node.js
+        if: steps.version.outputs.changed == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Publish to npm
+        if: steps.version.outputs.changed == 'true'
         run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          generate_release_notes: true
+      - name: Summary
+        if: steps.version.outputs.changed == 'true'
+        run: |
+          echo "Published v${{ steps.version.outputs.version }} to npm" >> $GITHUB_STEP_SUMMARY
