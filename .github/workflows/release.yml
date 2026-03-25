@@ -7,8 +7,8 @@ on:
       - 'package.json'
 
 permissions:
-  id-token: write
-  contents: read
+  id-token: write # 必须：用于 OIDC 身份验证
+  contents: read  # 必须：用于检出代码
 
 jobs:
   publish:
@@ -22,10 +22,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          registry-url: 'https://registry.npmjs.org'
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          node-version: '24'
+          # 注意：这里去掉了 registry-url，因为我们要走 OIDC 原生发布流
 
       - name: Check version changed
         id: version
@@ -35,6 +33,8 @@ jobs:
           if [ "$PREV_VERSION" != "$CURR_VERSION" ]; then
             echo "changed=true" >> $GITHUB_OUTPUT
             echo "version=$CURR_VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "No version change detected."
           fi
 
       - name: Install dependencies
@@ -52,7 +52,8 @@ jobs:
 
       - name: Publish to npm
         if: steps.version.outputs.changed == 'true'
-        run: npm publish --access public --provenance
+        # --provenance 会生成可信供应链证明，完美配合 OIDC
+        run: npm publish --provenance --access public
 
       - name: Summary
         if: steps.version.outputs.changed == 'true'
