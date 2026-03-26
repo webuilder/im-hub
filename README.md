@@ -14,6 +14,12 @@
 </p>
 
 <p align="center">
+  <a href="https://discord.gg/R83CXYz5"><img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord"></a>
+  &nbsp;
+  <a href="https://x.com/lijieisme"><img src="https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white" alt="X"></a>
+</p>
+
+<p align="center">
   <img src="assets/screenshot-telegram.png" alt="Telegram" width="400">
   &nbsp;&nbsp;
   <img src="assets/screenshot-wechat.png" alt="WeChat" width="400">
@@ -203,6 +209,24 @@ npm start
 ### v0.3.0
 - [ ] DingTalk adapter
 - [ ] Slack adapter
+
+## Community <a name="wechat-group"></a>
+
+Questions? Feel free to reach out on [X](https://x.com/lijieisme) or join the Discord.
+
+<p align="center">
+  <a href="https://discord.gg/R83CXYz5">
+    <img src="https://img.shields.io/badge/Join_Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Join Discord">
+  </a>
+  &nbsp;
+  <a href="https://x.com/lijieisme">
+    <img src="https://img.shields.io/badge/Follow_on_X-000000?style=for-the-badge&logo=x&logoColor=white" alt="X">
+  </a>
+</p>
+
+<p align="center">
+  <img src="assets/wechat-group" alt="WeChat Group" width="180">
+</p>
 
 ## License
 
