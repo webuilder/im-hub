@@ -90,6 +90,11 @@ program
       console.log('')
     }
 
+    // Set defaultAgent to first available installed agent
+    if (agentResult.available.length > 0) {
+      config.defaultAgent = agentResult.available[0]
+    }
+
     // ============================================
     // START MESSENGERS
     // ============================================
